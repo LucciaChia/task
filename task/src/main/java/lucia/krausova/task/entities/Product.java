@@ -17,7 +17,7 @@ public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer uuid;
+    private Integer id;
     private String name;
     private BigDecimal price;
 
@@ -29,7 +29,7 @@ public class Product {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof Product )) return false;
-        return uuid != null && uuid.equals(((Product) o).getUuid());
+        return id != null && id.equals(((Product) o).getId());
     }
 
     @Override

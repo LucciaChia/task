@@ -73,7 +73,7 @@ class CategoryControllerTest {
                 .name("blueberry")
                 .price(new BigDecimal("0.05"))
                 .build();
-        mockMvc.perform(post("/task/category/" + fruitCategory.getUuid() +"/product")
+        mockMvc.perform(post("/task/category/" + fruitCategory.getId() +"/product")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(blueberryProduct)))
@@ -88,7 +88,7 @@ class CategoryControllerTest {
     void deleteByIdFound() throws Exception {
         Category existingCategory = categoryRepository.findAll().get(1);
 
-        mockMvc.perform(delete("/task/category/" + existingCategory.getUuid())
+        mockMvc.perform(delete("/task/category/" + existingCategory.getId())
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(existingCategory)))

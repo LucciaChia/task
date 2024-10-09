@@ -17,7 +17,7 @@ import java.util.Set;
 @Builder
 public class CategoryDTO {
 
-    private Integer uuid;
+    private Integer id;
     private String name;
     private Set<ProductDTO> products = new HashSet<>();
 }

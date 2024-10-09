@@ -46,7 +46,7 @@ class CategoryServiceTest {
                 .name("vegetables")
                 .build();
         categoryService.saveCategory(category);
-        categoryService.deleteById(category.getUuid());
+        categoryService.deleteById(category.getId());
 
         assertThat(categoryRepository.findAll().size()).isEqualTo(2);
 
@@ -59,7 +59,7 @@ class CategoryServiceTest {
 
         int initialProductSize = productRepository.findAll().size();
 
-        Integer categoryId = categoryRepository.findAll().get(1).getUuid();
+        Integer categoryId = categoryRepository.findAll().get(1).getId();
         categoryRepository.deleteById(categoryId);
 
         int productSizeAfterCategoryDelete = productRepository.findAll().size();

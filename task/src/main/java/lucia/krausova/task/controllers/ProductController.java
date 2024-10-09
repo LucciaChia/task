@@ -16,18 +16,18 @@ public class ProductController {
     private final ProductService productService;
 
     // POST (create)
-    @PostMapping(value = "/{category_uuid}")
-    public ResponseEntity addProduct(@PathVariable("category_uuid") Integer uuid, @RequestBody Product product) {
-        productService.saveProduct(uuid, product);
+    @PostMapping(value = "/{categoryId}")
+    public ResponseEntity addProduct(@PathVariable("categoryId") Integer categoryId, @RequestBody Product product) {
+        productService.saveProduct(categoryId, product);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     // PUT (create or update)
-    @PutMapping(value = "/{product_uuid}")
-    public ResponseEntity updateCustomerByID(@PathVariable("product_uuid") Integer uuid,
+    @PutMapping(value = "/{productId}")
+    public ResponseEntity updateCustomerByID(@PathVariable("productId") Integer productId,
                                              @RequestBody Product updatedProduct){
 
-        if (productService.updateProductById(uuid, updatedProduct).isEmpty()){
+        if (productService.updateProductById(productId, updatedProduct).isEmpty()){
             throw new ElementNotFoundException();
         }
 
@@ -36,8 +36,8 @@ public class ProductController {
 
 
     // DELETE
-    @DeleteMapping(value = "/{uuid}")
-    public ResponseEntity deleteById(@PathVariable("uuid") Integer id) {
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity deleteById(@PathVariable("id") Integer id) {
         if (!productService.deleteById(id)) {
             throw new ElementNotFoundException();
         }
@@ -45,8 +45,8 @@ public class ProductController {
     }
 
     // GET (request a resource) implemented for double-checks purposes
-    @GetMapping(value = "/{uuid}")
-    public Product getProductById(@PathVariable("uuid") Integer id) {
+    @GetMapping(value = "/{id}")
+    public Product getProductById(@PathVariable("id") Integer id) {
         return productService.getProductById(id).orElseThrow(ElementNotFoundException::new);
 
     }

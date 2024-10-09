@@ -1,9 +1,9 @@
 package lucia.krausova.task.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lucia.krausova.task.entities.Category;
-import lucia.krausova.task.entities.Product;
 import lucia.krausova.task.exceptions.ElementNotFoundException;
+import lucia.krausova.task.mappers.CategoryMapper;
+import lucia.krausova.task.model.CategoryDTO;
 import lucia.krausova.task.repositories.CategoryRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,10 +17,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.math.BigDecimal;
-
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -40,6 +37,9 @@ class CategoryControllerTest {
     @Autowired
     ObjectMapper objectMapper;
 
+    @Autowired
+    CategoryMapper categoryMapper;
+
     MockMvc mockMvc;
 
     @BeforeEach
@@ -51,42 +51,22 @@ class CategoryControllerTest {
     @Transactional
     @Test
     void addCategory() throws Exception {
-        Category category = Category.builder()
+        CategoryDTO categoryDto = CategoryDTO.builder()
                 .name("vegetables")
                 .build();
 
         mockMvc.perform(post("/task/category")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(category)))
+                        .content(objectMapper.writeValueAsString(categoryDto)))
                 .andExpect(status().isCreated());
-    }
-
-    @Rollback
-    @Transactional
-    @Test
-    void addProductToCategory() throws Exception {
-        Category fruitCategory = categoryRepository.findAll().getFirst();
-        int initialProductSize = fruitCategory.getProducts().size();
-
-        Product blueberryProduct = Product.builder()
-                .name("blueberry")
-                .price(new BigDecimal("0.05"))
-                .build();
-        mockMvc.perform(post("/task/category/" + fruitCategory.getId() +"/product")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(blueberryProduct)))
-                .andExpect(status().isCreated());
-
-        assertThat(fruitCategory.getProducts().size()).isGreaterThan(initialProductSize);
     }
 
     @Rollback
     @Transactional
     @Test
     void deleteByIdFound() throws Exception {
-        Category existingCategory = categoryRepository.findAll().get(1);
+        CategoryDTO existingCategory = categoryMapper.categoryToCategoryDto(categoryRepository.findAll().get(1));
 
         mockMvc.perform(delete("/task/category/" + existingCategory.getId())
                         .accept(MediaType.APPLICATION_JSON)

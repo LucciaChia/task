@@ -21,7 +21,7 @@ public class Product {
     private String name;
     private BigDecimal price;
 
-    @JsonIgnore // Json Ignore - necessary to get rid off the looped children in the GET - double-checked via Postman
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     private Category category;
 

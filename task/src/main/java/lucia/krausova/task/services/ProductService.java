@@ -1,16 +1,16 @@
 package lucia.krausova.task.services;
 
-import lucia.krausova.task.entities.Product;
+import lucia.krausova.task.model.ProductDTO;
 
 import java.util.Optional;
 
 public interface ProductService {
 
-    Boolean saveProduct(Integer categoryId, Product product);
+    Boolean saveProduct(ProductDTO productDTO);
 
-    Optional<Product> getProductById(Integer id);
+    Optional<ProductDTO> getProductById(Integer id);
 
     Boolean deleteById(Integer id);
 
-    Optional<Product> updateProductById(Integer productId, Product updatedProduct);
+    Optional<ProductDTO> updateProductById(Integer productId, ProductDTO updatedProductDTO);
 }

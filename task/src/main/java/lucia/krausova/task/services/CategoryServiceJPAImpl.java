@@ -2,9 +2,9 @@ package lucia.krausova.task.services;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lucia.krausova.task.entities.Category;
+import lucia.krausova.task.mappers.CategoryMapper;
+import lucia.krausova.task.model.CategoryDTO;
 import lucia.krausova.task.repositories.CategoryRepository;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,23 +14,24 @@ import java.util.Optional;
 @Service
 public class CategoryServiceJPAImpl implements CategoryService {
 
-    // it doesn't work if it's not final
     private final CategoryRepository categoryRepository;
 
+    private final CategoryMapper categoryMapper;
+
     @Override
-    public Optional<Category> getCategoryById(Integer id) {
-        return Optional.ofNullable(categoryRepository.findById(id).orElse(null));
+    public Optional<CategoryDTO> getCategoryById(Integer id) {
+        return Optional.ofNullable(categoryMapper
+                .categoryToCategoryDto(categoryRepository.findById(id).orElse(null)));
     }
 
     @Override
-    public Boolean saveCategory(Category category) {
-        categoryRepository.save(category);
+    public Boolean saveCategory(CategoryDTO categoryDto) {
+        categoryRepository.save(categoryMapper.categoryDtoToCategory(categoryDto));
         return true;
     }
 
     @Override
-    public boolean deleteById(Integer id) {
-
+    public Boolean deleteById(Integer id) {
         if (categoryRepository.existsById(id)) {
             categoryRepository.deleteById(id);
             return true;

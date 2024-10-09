@@ -1,6 +1,8 @@
 package lucia.krausova.task.services;
 
 import lucia.krausova.task.entities.Category;
+import lucia.krausova.task.mappers.CategoryMapper;
+import lucia.krausova.task.model.CategoryDTO;
 import lucia.krausova.task.repositories.CategoryRepository;
 import lucia.krausova.task.repositories.ProductRepository;
 import org.junit.jupiter.api.Test;
@@ -30,7 +32,7 @@ class CategoryServiceTest {
     @Transactional
     @Test
     void saveCategory() {
-        Category category = Category.builder()
+        CategoryDTO category = CategoryDTO.builder()
                 .name("vegetables")
                 .build();
         categoryService.saveCategory(category);
@@ -42,11 +44,17 @@ class CategoryServiceTest {
     @Transactional
     @Test
     void deleteCategoryWithoutProductsById() {
-        Category category = Category.builder()
+        CategoryDTO categoryDTO = CategoryDTO.builder()
                 .name("vegetables")
                 .build();
-        categoryService.saveCategory(category);
-        categoryService.deleteById(category.getId());
+
+        categoryService.saveCategory(categoryDTO);
+        Category savedCategory = categoryRepository.findAll()
+                .stream()
+                .filter(category -> category.getName().equals("vegetables"))
+                .toList().getFirst();
+
+        categoryService.deleteById(savedCategory.getId());
 
         assertThat(categoryRepository.findAll().size()).isEqualTo(2);
 

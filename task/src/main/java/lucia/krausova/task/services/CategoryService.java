@@ -1,14 +1,14 @@
 package lucia.krausova.task.services;
 
-import lucia.krausova.task.entities.Category;
+import lucia.krausova.task.model.CategoryDTO;
 
 import java.util.Optional;
 
 public interface CategoryService {
 
-    Optional<Category> getCategoryById(Integer id);
+    Optional<CategoryDTO> getCategoryById(Integer id);
 
-    Boolean saveCategory(Category category);
+    Boolean saveCategory(CategoryDTO category);
 
-    boolean deleteById(Integer id);
+    Boolean deleteById(Integer id);
 }

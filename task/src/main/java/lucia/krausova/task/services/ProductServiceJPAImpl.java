@@ -4,6 +4,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import lucia.krausova.task.entities.Category;
 import lucia.krausova.task.entities.Product;
+import lucia.krausova.task.mappers.CategoryMapper;
+import lucia.krausova.task.mappers.ProductMapper;
+import lucia.krausova.task.model.ProductDTO;
 import lucia.krausova.task.repositories.CategoryRepository;
 import lucia.krausova.task.repositories.ProductRepository;
 import org.springframework.stereotype.Service;
@@ -20,21 +23,25 @@ public class ProductServiceJPAImpl implements ProductService {
 
     private final CategoryRepository categoryRepository;
 
+    private final ProductMapper productMapper;
+
     @Override
-    public Boolean saveProduct(Integer uuid, Product product) {
-        Optional<Category> categoryRepositoryById = categoryRepository.findById(uuid);
+    public Boolean saveProduct(ProductDTO productDTO) {
+        Optional<Category> categoryRepositoryById = categoryRepository.findById(productDTO.getCategoryId());
         Category category = categoryRepositoryById.get();
+
+        Product product = productMapper.productDtoToProduct(productDTO);
+
         product.setCategory(category);
         category.addProduct(product);
         categoryRepository.flush();
         productRepository.save(product);
-//        categoryRepository.save(category);
         return true;
     }
 
     @Override
-    public Optional<Product> getProductById(Integer id) {
-        return Optional.ofNullable(productRepository.findById(id).orElse(null));
+    public Optional<ProductDTO> getProductById(Integer id) {
+        return Optional.ofNullable(productMapper.productToProductDto(productRepository.findById(id).orElse(null)));
     }
 
     @Override
@@ -51,13 +58,13 @@ public class ProductServiceJPAImpl implements ProductService {
     }
 
     @Override
-    public Optional<Product> updateProductById(Integer id, Product updatedProduct) {
-        AtomicReference<Optional<Product>> atomicReference = new AtomicReference<>();
+    public Optional<ProductDTO> updateProductById(Integer id, ProductDTO updatedProductDTO) {
+        AtomicReference<Optional<ProductDTO>> atomicReference = new AtomicReference<>();
         productRepository.findById(id).ifPresentOrElse(existingProduct -> {
-            existingProduct.setName(updatedProduct.getName());
-            existingProduct.setPrice(updatedProduct.getPrice());
+            existingProduct.setName(updatedProductDTO.getName());
+            existingProduct.setPrice(updatedProductDTO.getPrice());
             productRepository.save(existingProduct);
-            atomicReference.set(Optional.of(existingProduct));
+            atomicReference.set(Optional.of(productMapper.productToProductDto(existingProduct)));
         }, () -> atomicReference.set(Optional.empty()));
 
         return atomicReference.get();
